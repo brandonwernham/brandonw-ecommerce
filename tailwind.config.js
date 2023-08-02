@@ -15,13 +15,15 @@ module.exports = {
       },
       backgroundImage: {
         "primary-gradient":
-          "linear-gradient(180deg, #000000 0.82%, #4A2800 129%)",
+          "linear-gradient(180deg, #6527BE 0.82%, #9681EB 129%)",
       },
       colors: {
         primary: {
-          light: "#FCC182",
-          DEFAULT: "#FA9021",
-          dark: "#AF5B04",
+          light: "#A7EDE7",
+          DEFAULT: "#45CFDD",
+          dark: "#37A7B3",
+          primarylight: "#9681EB",
+          primarydark: "#6527BE",
         },
       },
     },
