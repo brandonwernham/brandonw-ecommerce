@@ -11,11 +11,11 @@ const headerClassNames = {
   contactUs: "px-6 py-2 rounded-md bg-primary hover:bg-primary-dark",
   orders: "px-6 py-2 rounded-md bg-primary hover:bg-primary-dark",
   signupBtn:
-    "bg-primary-primarylight mr-4 hover:bg-primary-primarydark text-white font-bold py-2 px-4 rounded",
+    "bg-primary-primarydark mr-4 hover:bg-primary-primarylight text-white font-bold py-2 px-4 rounded",
   signinBtn:
-    "bg-primary-primarylight flex hover:bg-primary-primarydark text-white font-bold py-2 px-4 rounded",
+    "bg-primary-primarydark flex hover:bg-primary-primarylight text-white font-bold py-2 px-4 rounded",
   logoutBtn:
-    "bg-primary-primarylight ml-4 flex hover:bg-primary-primarydark text-white font-bold py-2 px-4 rounded",
+    "bg-primary-primarydark ml-4 flex hover:bg-primary-primarylight text-white font-bold py-2 px-4 rounded",
 };
 
 export default headerClassNames;

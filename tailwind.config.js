@@ -15,7 +15,7 @@ module.exports = {
       },
       backgroundImage: {
         "primary-gradient":
-          "linear-gradient(180deg, #6527BE 0.82%, #9681EB 129%)",
+          "linear-gradient(180deg, #4D1D91 0.82%, #9681EB 129%)",
       },
       colors: {
         primary: {
@@ -23,7 +23,7 @@ module.exports = {
           DEFAULT: "#45CFDD",
           dark: "#37A7B3",
           primarylight: "#9681EB",
-          primarydark: "#6527BE",
+          primarydark: "#4D1D91",
         },
       },
     },
