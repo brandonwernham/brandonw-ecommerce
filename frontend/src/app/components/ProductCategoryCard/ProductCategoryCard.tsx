@@ -17,7 +17,7 @@ const ProductCategoryCard: FC<ProductCategoryCardProps> = (props) => {
     <Link href={`categories/${slug}`} className={container}>
       <Image
         src={categoryImage}
-        alt={name}
+        alt={categoryName}
         width={200}
         height={200}
         className={image}
