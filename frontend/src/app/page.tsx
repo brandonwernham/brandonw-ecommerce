@@ -4,8 +4,14 @@ import ProductCard from "./components/ProductCard/ProductCard";
 import Image from "next/image";
 import ProductCategoryCard from "./components/ProductCategoryCard/ProductCategoryCard";
 import NewsLetter from "./components/NewsLetter/NewsLetter";
+import { getCategories, getProducts } from "@/libs/apis";
 
-export default function Home() {
+export default async function Home() {
+  const categories = await getCategories();
+  const products = await getProducts();
+  const isTrendingProducts = products?.filter((product) => product.isTrending);
+  const isFeaturedProduct = products?.find((product) => product.isFeatured);
+
   return (
     <>
       <MainHomeSection />
@@ -20,35 +26,43 @@ export default function Home() {
         <div className="flex gap-8 flex-wrap">
           {products.map((product) => (
             <ProductCard
-              key={product.id}
+              key={product._id}
               productName={product.name}
-              imageUrl={product.image}
-              slug={product.slug}
+              imageUrl={product.images[0].url}
+              slug={product.slug.current}
               price={product.price}
             />
           ))}
         </div>
       </section>
 
-      <section className={sectionClassNames.featured}>
-        <div className={sectionClassNames.featuredContent}>
-          <h2 className={featuredClassNames.productName}>
-            {featuredProduct.name}
-          </h2>
-          <p className={featuredClassNames.productDetails}>
-            {featuredProduct.description}
-          </p>
-          <Link href={`/products/${featuredProduct.slug}`}>
-            <Image
-              src={featuredProduct.image}
-              alt={featuredProduct.name}
-              width={500}
-              height={500}
-              className={featuredClassNames.productImage}
-            />
-          </Link>
-        </div>
-      </section>
+      {isFeaturedProduct && (
+        <>
+          <h3 className="font-semibold text-2xl max-w-3xl text-center mx-auto text-primary pt-12 sm:pt-28 pb-8 sm:pb-16 leading-[125%] sm:leading-[187%]">
+            Featured Product
+          </h3>
+
+          <section className={sectionClassNames.featured}>
+            <div className={sectionClassNames.featuredContent}>
+              <h2 className={featuredClassNames.productName}>
+                {isFeaturedProduct.name}
+              </h2>
+              <p className={featuredClassNames.productDetails}>
+                {isFeaturedProduct.description}
+              </p>
+              <Link href={`/products/${isFeaturedProduct.slug.current}`}>
+                <Image
+                  src={isFeaturedProduct.images[0].url}
+                  alt={isFeaturedProduct.name}
+                  width={500}
+                  height={500}
+                  className={featuredClassNames.productImage}
+                />
+              </Link>
+            </div>
+          </section>
+        </>
+      )}
 
       <section
         style={{
@@ -66,10 +80,10 @@ export default function Home() {
           <div className="flex flex-wrap">
             {categories.map((category) => (
               <ProductCategoryCard
-                key={category.id}
+                key={category._id}
                 categoryImage={category.image}
                 categoryName={category.name}
-                slug={category.slug}
+                slug={category.slug.current}
               />
             ))}
           </div>
@@ -85,10 +99,10 @@ export default function Home() {
         <div className="flex rounded gap-8 flex-wrap py-10">
           {products.map((product) => (
             <ProductCard
-              key={product.id}
+              key={product._id}
               productName={product.name}
-              imageUrl={product.image}
-              slug={product.slug}
+              imageUrl={product.images[0].url}
+              slug={product.slug.current}
               price={product.price}
             />
           ))}
@@ -117,45 +131,6 @@ const sectionClassNames = {
     "flex flex-col items-center justify-center mt-10 mx-auto max-w-screen-xl",
 };
 
-const products = [
-  {
-    id: 1,
-    price: 12,
-    name: "PC 1",
-    slug: "pc-1",
-    image: "https://i.ibb.co/ZGD2SP0/IMG-3455-1.jpg",
-  },
-  {
-    id: 2,
-    price: 14,
-    name: "PC 2",
-    slug: "pc-2",
-    image: "https://i.ibb.co/SJVvMHK/IMG-3226.jpg",
-  },
-  {
-    id: 3,
-    price: 42,
-    name: "PC 3",
-    slug: "pc-3",
-    image: "https://i.ibb.co/pdQzT0n/IMG-3192-1.jpg",
-  },
-  {
-    id: 4,
-    price: 27,
-    name: "PC 4",
-    slug: "pc-4",
-    image: "https://i.ibb.co/bQ47jsq/IMG-3175-1.jpg",
-  },
-];
-
-const featuredProduct = {
-  name: "Featured PC",
-  description:
-    "This PC features a cpu that can be used to drive the game. It has a 100% CPU power and plenty of ram. The graphics card supports the latest popular games.",
-  slug: "featured-pc",
-  image: "/images/trending.jpg",
-};
-
 const featuredClassNames = {
   productName: "font-bold text-2xl md:text-3xl lg:text-4xl mb-4 md:mb-8",
   productDetails: "max-w-screen-md text-sm mb-8 md:mb-12",
@@ -171,30 +146,6 @@ const styles = {
   categorySubHeading:
     "text-center bg-black px-8 rounded-3xl py-5 max-w-md sm:max-w-lg md:max-w-2xl mx-auto text-white text-base sm:text-lg md:text-xl lg:text-2xl mb-8",
 };
-
-const categories = [
-  {
-    id: 1,
-    name: "High End",
-    slug: "high-end",
-    image:
-      "https://images.unsplash.com/photo-1587202372634-32705e3bf49c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-  },
-  {
-    id: 2,
-    name: "Mid Range",
-    slug: "mid-range",
-    image:
-      "https://images.unsplash.com/photo-1660855552442-1bae49431379?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-  },
-  {
-    id: 3,
-    name: "Budget",
-    slug: "budget",
-    image:
-      "https://images.unsplash.com/photo-1529961172671-d48e8280f846?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1127&q=80",
-  },
-];
 
 const recentProductsClasses = {
   section: "py-16 lg:py-36 px-4 lg:px-36 text-white text-center",
