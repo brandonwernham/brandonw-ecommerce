@@ -1,14 +1,15 @@
 import NewsLetter from "@/app/components/NewsLetter/NewsLetter";
+import ProductCard from "@/app/components/ProductCard/ProductCard";
+import { getCategory, getCategoryProducts } from "@/libs/apis";
 import { NextPage } from "next";
 
-interface ProductCategoryProps {
-  params: { slug: string };
-}
-
-const ProductCategory: NextPage<ProductCategoryProps> = (props) => {
+const ProductCategory = async (props: { params: { slug: string } }) => {
   const {
     params: { slug },
   } = props;
+
+  const products = await getCategoryProducts(slug);
+  const { subtitle } = await getCategory(slug);
 
   return (
     <>
@@ -16,9 +17,7 @@ const ProductCategory: NextPage<ProductCategoryProps> = (props) => {
         <div className={classNames.heroContent}>
           <div className="lg:w-3/4">
             <h1 className={classNames.title}>{slug.toUpperCase()} Products</h1>
-            <p className={classNames.subtitle}>
-              A short subtitle that provides more context about the product.
-            </p>
+            <p className={classNames.subtitle}>{subtitle}</p>
           </div>
         </div>
       </section>
@@ -29,7 +28,17 @@ const ProductCategory: NextPage<ProductCategoryProps> = (props) => {
           Check out our latest collection of{" "}
           <span className="text-primary">{slug}</span> products
         </p>
-        <div className="flex rounded gap-8 flex-wrap py-10">{}</div>
+        <div className="flex rounded gap-8 flex-wrap py-10">
+          {products.map((product) => (
+            <ProductCard
+              key={product._id}
+              productName={product.name}
+              imageUrl={product.images[0].url}
+              price={product.price}
+              slug={product.slug.current}
+            />
+          ))}
+        </div>
       </section>
 
       <NewsLetter />
@@ -59,7 +68,7 @@ const classNames = {
   blogTitle: "text-3xl font-bold text-gray-300",
   blogDate: "mt-2 text-gray-200 text-sm",
   blogText: "mt-4 text-gray-200 leading-7",
-  section: "py-16 lg:py-36 px-4 lg:px-36 text-white text-center",
+  section: "py-16 lg:py-16 px-4 lg:px-36 text-white text-center",
   heading: "text-3xl lg:text-4xl font-bold mb-3",
   subHeading: "text-gray-400 max-w-xl mx-auto lg:text-lg",
   latestButton:

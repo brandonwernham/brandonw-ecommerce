@@ -4,13 +4,14 @@ import ProductCard from "./components/ProductCard/ProductCard";
 import Image from "next/image";
 import ProductCategoryCard from "./components/ProductCategoryCard/ProductCategoryCard";
 import NewsLetter from "./components/NewsLetter/NewsLetter";
-import { getCategories, getProducts } from "@/libs/apis";
+import { getCategories, getProducts, getRecentProducts } from "@/libs/apis";
 
 export default async function Home() {
   const categories = await getCategories();
   const products = await getProducts();
   const isTrendingProducts = products?.filter((product) => product.isTrending);
   const isFeaturedProduct = products?.find((product) => product.isFeatured);
+  const recentProducts = await getRecentProducts();
 
   return (
     <>
@@ -97,7 +98,7 @@ export default async function Home() {
         </p>
 
         <div className="flex rounded gap-8 flex-wrap py-10">
-          {products.map((product) => (
+          {recentProducts.map((product) => (
             <ProductCard
               key={product._id}
               productName={product.name}
