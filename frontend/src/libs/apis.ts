@@ -93,6 +93,7 @@ export const getRecentProducts = async (): Promise<Product[]> => {
 
 export const getProduct = async (slug: string): Promise<Product> => {
   const query = `*[_type == "product" && slug.current == "${slug}"][0] {
+    _id,
     name,
     price,
     images,

@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import headerClassNames from "./headerClassNames";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import { useAppDispatch, useAppSelector } from "@/hooks/storeHook";
+import { toggleCart } from "@/redux/features/cartSlice";
 
 const Header = () => {
   const {
@@ -20,6 +24,8 @@ const Header = () => {
     cart,
   } = headerClassNames;
 
+  const dispatch = useAppDispatch();
+
   return (
     <header className={header}>
       <div className={container}>
@@ -30,7 +36,7 @@ const Header = () => {
         <nav className={nav}>
           <ul className={ul}>
             <li>
-              <button className={link}>
+              <button onClick={() => dispatch(toggleCart())} className={link}>
                 <span>
                   Cart
                   <AiOutlineShoppingCart className="inline-block text-3xl" />

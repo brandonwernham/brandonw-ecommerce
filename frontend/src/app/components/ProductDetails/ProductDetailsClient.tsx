@@ -1,8 +1,10 @@
 "use client";
 
 import CarouselSlider from "@/app/components/CarouselSlider/CarouselSlider";
+import { useAppDispatch } from "@/hooks/storeHook";
 import { getProduct } from "@/libs/apis";
 import { Product } from "@/models/product";
+import { addItemToCart } from "@/redux/features/cartSlice";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
@@ -15,6 +17,7 @@ const ProductDetailsClient = (props: {
   const [quantity, setQuantity] = useState(0);
   const [price, setPrice] = useState(0);
   const [productDetails, setProductDetails] = useState<Product>();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -39,6 +42,11 @@ const ProductDetailsClient = (props: {
       setQuantity(quantity + 1);
       setPrice(Number(((quantity + 1) * productDetails.price).toFixed(2)));
     }
+  };
+
+  const handleAddToCart = () => {
+    if (!productDetails) return;
+    dispatch(addItemToCart({ ...productDetails, quantity }));
   };
 
   return (
@@ -77,6 +85,7 @@ const ProductDetailsClient = (props: {
             )}
             <div className={classNames.cartPrice}>$ {price}</div>
             <button
+              onClick={handleAddToCart}
               className={`${classNames.button} ${
                 quantity === 0 && classNames.disabledButton
               }`}
