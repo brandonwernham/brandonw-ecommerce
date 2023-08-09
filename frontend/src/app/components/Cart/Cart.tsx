@@ -6,10 +6,12 @@ import Image from "next/image";
 import { FC, useEffect } from "react";
 import { RiCloseLine } from "react-icons/ri";
 import { useState } from "react";
+import useCartTotals from "@/hooks/useCartTotals";
 
 const Cart: FC = () => {
   const { showCart, cartItems } = useAppSelector((state) => state.cart);
   const [renderComponent, setRenderComponent] = useState(false);
+  const { totalPrice } = useCartTotals();
 
   const dispatch = useAppDispatch();
 
@@ -19,23 +21,6 @@ const Cart: FC = () => {
   useEffect(() => {
     setRenderComponent(true);
   }, []);
-
-  const calculateCartTotals = (): {
-    totalPrice: number;
-    totalQuantity: number;
-  } => {
-    let totalPrice = 0;
-    let totalQuantity = 0;
-
-    cartItems.forEach((item) => {
-      totalPrice += Number((item.price * item.quantity).toFixed(2));
-      totalQuantity += item.quantity;
-    });
-
-    return { totalPrice, totalQuantity };
-  };
-
-  const { totalPrice, totalQuantity } = calculateCartTotals();
 
   if (!renderComponent) return <></>;
 
