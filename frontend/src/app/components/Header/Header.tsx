@@ -8,6 +8,7 @@ import { toggleCart } from "@/redux/features/cartSlice";
 import useCartTotals from "@/hooks/useCartTotals";
 import Signup from "../Signup/Signup";
 import { useState } from "react";
+import { signIn, useSession, signOut } from "next-auth/react";
 
 const Header = () => {
   const {
@@ -29,12 +30,25 @@ const Header = () => {
 
   const [isSignupFormOpen, setIsSignUpFormOpen] = useState(false);
 
+  const { status, data: session } = useSession({
+    required: true,
+    onUnauthenticated() {},
+  });
+
   const { totalQuantity } = useCartTotals();
 
   const dispatch = useAppDispatch();
 
   const toggleForm = () => {
     setIsSignUpFormOpen(!isSignupFormOpen);
+  };
+
+  const signinHandler = async () => {
+    try {
+      await signIn();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -59,14 +73,26 @@ const Header = () => {
               </li>
 
               <li className="flex items-center justify-center h-7">
-                <Link href="/orders" className={orders}>
-                  Orders
-                </Link>
-                <button className={logoutBtn}>Logout</button>
-                <button className={signinBtn} onClick={toggleForm}>
-                  Sign Up
-                </button>
-                <button className={signinBtn}>Sign In</button>
+                {session?.user && (
+                  <>
+                    <Link href="/orders" className={orders}>
+                      Orders
+                    </Link>
+                    <button className={logoutBtn} onClick={() => signOut()}>
+                      Logout
+                    </button>
+                  </>
+                )}
+                {!session?.user && (
+                  <>
+                    <button className={signinBtn} onClick={toggleForm}>
+                      Sign Up
+                    </button>
+                    <button className={signinBtn} onClick={signinHandler}>
+                      Sign In
+                    </button>
+                  </>
+                )}
               </li>
             </ul>
           </nav>
