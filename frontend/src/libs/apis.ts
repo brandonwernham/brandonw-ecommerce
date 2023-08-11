@@ -138,3 +138,44 @@ export const updateProductQuantity = async (products: ProductSubset[]) => {
 
   return data;
 };
+
+export const createOrder = async (
+  products: ProductSubset[],
+  orderData: {
+    userEmail: string;
+    phoneNumber: string;
+    shippingAddress: string;
+    totalPrice: number;
+  }
+) => {
+  const mutation = {
+    mutations: [
+      {
+        create: {
+          _type: "order",
+          userEmail: orderData.userEmail,
+          phoneNumber: orderData.phoneNumber,
+          shippingAddress: orderData.shippingAddress,
+          items: products.map((product) => ({
+            _type: "orderItem",
+            product: {
+              _type: "reference",
+              _ref: product._id,
+            },
+            quantity: product.quantity,
+          })),
+          totalPrice: orderData.totalPrice,
+          orderStatus: "pending",
+        },
+      },
+    ],
+  };
+
+  const { data } = await axios.post(
+    `https://${process.env.NEXT_PUBLIC_SANITY_STUDIO_PROJECT_ID}.api.sanity.io/v1/data/mutate/${process.env.NEXT_PUBLIC_SANITY_STUDIO_DATASET}`,
+    mutation,
+    { headers: { Authorization: `Bearer ${process.env.SANITY_TOKEN}` } }
+  );
+
+  return data;
+};

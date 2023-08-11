@@ -39,6 +39,7 @@ export async function POST(req: Request, res: Response) {
       billing_address_collection: "required",
       mode: "payment",
       success_url: `${origin}/?success=true`,
+      phone_number_collection: { enabled: true },
     });
 
     await updateProductQuantity(updatedItems);
