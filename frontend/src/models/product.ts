@@ -13,3 +13,8 @@ export interface Product {
   quantity: number;
   description: string;
 }
+
+export type ProductSubset = Pick<
+  Product,
+  "_id" | "price" | "quantity" | "images" | "name"
+> & { maxQuantity: number };
