@@ -141,30 +141,23 @@ export const updateProductQuantity = async (products: ProductSubset[]) => {
 
 export const createOrder = async (
   products: ProductSubset[],
-  orderData: {
-    userEmail: string;
-    phoneNumber: string;
-    shippingAddress: string;
-    totalPrice: number;
-  }
+  userEmail: string
 ) => {
   const mutation = {
     mutations: [
       {
         create: {
           _type: "order",
-          userEmail: orderData.userEmail,
-          phoneNumber: orderData.phoneNumber,
-          shippingAddress: orderData.shippingAddress,
-          items: products.map((product) => ({
+          items: products.map((product, idx) => ({
             _type: "orderItem",
             product: {
+              _key: idx,
               _type: "reference",
               _ref: product._id,
             },
             quantity: product.quantity,
           })),
-          totalPrice: orderData.totalPrice,
+          userEmail,
           orderStatus: "pending",
         },
       },
@@ -179,3 +172,30 @@ export const createOrder = async (
 
   return data;
 };
+
+export async function fetchOrder(userEmail: string) {
+  const query = `*[_type == "order" && userEmail == $userEmail] {
+    _id,
+    items[] {
+      _key,
+      quantity,
+      product -> {
+        _id,
+        name,
+        price,
+        images,
+        slug {
+          current
+        },
+        description
+      }
+    },
+    orderStatus,
+    createdAt
+  }`;
+
+  const params = { userEmail };
+  const result: any = await sanityClient.fetch({ query, params });
+
+  return result;
+}

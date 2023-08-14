@@ -9,11 +9,13 @@ import { useState } from "react";
 import useCartTotals from "@/hooks/useCartTotals";
 import { getStripe } from "@/libs/loadStripe";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 const Cart: FC = () => {
   const { showCart, cartItems } = useAppSelector((state) => state.cart);
   const [renderComponent, setRenderComponent] = useState(false);
   const { totalPrice } = useCartTotals();
+  const { data: session } = useSession();
 
   const dispatch = useAppDispatch();
 
@@ -23,9 +25,14 @@ const Cart: FC = () => {
   const checkoutHandler = async () => {
     const stripe = await getStripe();
 
-    const { data } = await axios.post("/api/stripe", cartItems);
+    const { data } = await axios.post("/api/stripe", {
+      cartItems,
+      userEmail: session?.user?.email,
+    });
 
     if (!data) return;
+
+    localStorage.removeItem("cart");
 
     stripe.redirectToCheckout({ sessionId: data.id });
   };

@@ -2,14 +2,14 @@ import sanityClient from "@/libs/sanity";
 import { Product, ProductSubset } from "@/models/product";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { updateProductQuantity } from "@/libs/apis";
+import { createOrder, updateProductQuantity } from "@/libs/apis";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2022-11-15",
 });
 
 export async function POST(req: Request, res: Response) {
-  const cartItems = (await req.json()) as Product[];
+  const { cartItems, userEmail } = await req.json();
   const origin = req.headers.get("origin");
 
   const updatedItems: ProductSubset[] =
@@ -43,6 +43,8 @@ export async function POST(req: Request, res: Response) {
     });
 
     await updateProductQuantity(updatedItems);
+
+    await createOrder(updatedItems, userEmail);
 
     return NextResponse.json(session, {
       status: 200,
